@@ -1,0 +1,103 @@
+import java.util.Scanner;
+
+public class KaraokeReservationSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] roomPrices = {500, 700, 900, 1200, 1500};
+        int[] roomCapacities = {5, 8, 10, 15, 20};
+        boolean[] roomsReserved = new boolean[5];  
+        String[] roomNames = new String[5]; 
+        int availableRooms = 5;
+        while (true) {
+            System.out.println("\nKaraoke Reservation System");
+            System.out.println("1. Book a room");
+            System.out.println("2. Cancel a reservation");
+            System.out.println("3. View reservations");
+            System.out.println("4. Modify a reservation");
+            System.out.println("5. View room availability");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); 
+            if (choice == 1){
+                System.out.println("Available rooms with price and capacity:");
+                for (int i = 0; i < 5; i++) {
+                    if (!roomsReserved[i]) {
+                        System.out.println("Room " + (i + 1) + ": " + roomPrices[i] + " NRS, Capacity: " + roomCapacities[i] + " people");
+                    }
+                }
+                System.out.print("Enter the room number you want to book: ");
+                int roomNumber = scanner.nextInt();
+                scanner.nextLine(); 
+                if (roomNumber < 1 || roomNumber > 5 || roomsReserved[roomNumber - 1]) {
+                    System.out.println("Invalid room or room already reserved.");
+                } else {
+                    System.out.print("Enter your name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter the number of people: ");
+                    int people = scanner.nextInt();
+                    scanner.nextLine();
+                    if (people <= roomCapacities[roomNumber - 1]) {
+                        roomsReserved[roomNumber - 1] = true;
+                        roomNames[roomNumber - 1] = name;
+                        availableRooms--;
+                        System.out.println("Room " + roomNumber + " booked for " + name + " at price " + roomPrices[roomNumber - 1] + " NRS.");
+                    } else {
+                        System.out.println("Sorry, the room cannot accommodate that many people.");
+                    }
+                }
+
+            } else if (choice == 2) {
+                System.out.print("Enter room number to cancel: ");
+                int roomNumber = scanner.nextInt();
+                scanner.nextLine();
+                if (roomNumber < 1 || roomNumber > 5 || !roomsReserved[roomNumber - 1]) {
+                    System.out.println("No reservation found for this room.");
+                } else {
+                    roomsReserved[roomNumber - 1] = false;
+                    roomNames[roomNumber - 1] = "";
+                    availableRooms++;
+                    System.out.println("Reservation for Room " + roomNumber + " canceled.");
+                }
+
+            } else if (choice == 3) {
+                System.out.println("Current reservations:");
+                for (int i = 0; i < 5; i++) {
+                    if (roomsReserved[i]) {
+                        System.out.println("Room " + (i + 1) + " reserved by " + roomNames[i] + " at price " + roomPrices[i] + " NRS.");
+                    } else {
+                        System.out.println("Room " + (i + 1) + " is available.");
+                    }
+                }
+
+            } else if (choice == 4) {
+                System.out.print("Enter room number to modify: ");
+                int roomNumber = scanner.nextInt();
+                scanner.nextLine();  
+                if (roomNumber < 1 || roomNumber > 5 || !roomsReserved[roomNumber - 1]) {
+                    System.out.println("No reservation found for this room.");
+                } else {
+                    System.out.print("Enter the new name for reservation: ");
+                    String newName = scanner.nextLine();
+                    roomNames[roomNumber - 1] = newName;
+                    System.out.println("Reservation for Room " + roomNumber + " updated to " + newName);
+                }
+
+            } else if (choice == 5) {
+                System.out.println("Available rooms: " + availableRooms);
+                if (availableRooms == 0) {
+                    System.out.println("No rooms available.");
+                }
+
+            } else if (choice == 6) {
+                System.out.println("Exiting...");
+                break;
+
+            } else {
+                System.out.println("Invalid choice. Please try again.");
+            }
+        }
+
+        scanner.close();
+    }
+}
