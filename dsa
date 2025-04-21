@@ -1,0 +1,159 @@
+import java.util.Scanner;
+
+class Reservation {
+    int roomNumber;
+    String name;
+    String timeSlot;
+
+    Reservation(int roomNumber, String name, String timeSlot) {
+        this.roomNumber = roomNumber;
+        this.name = name;
+        this.timeSlot = timeSlot;
+    }
+}
+
+public class KaraokeReservationSystem {
+    static final int MAX_ROOMS = 5;
+    static Reservation[] reservations = new Reservation[50];
+    static int count = 0;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.println("\n🎤 Karaoke Reservation System 🎤");
+            System.out.println("1. Book a Room");
+            System.out.println("2. Cancel Reservation");
+            System.out.println("3. View Reservations");
+            System.out.println("4. Modify Reservation");
+            System.out.println("5. Check Room Availability");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    bookRoom(sc);
+                    break;
+                case 2:
+                    cancelReservation(sc);
+                    break;
+                case 3:
+                    viewReservations();
+                    break;
+                case 4:
+                    modifyReservation(sc);
+                    break;
+                case 5:
+                    checkAvailability(sc);
+                    break;
+                case 6:
+                    System.out.println("Exiting... Thank you!");
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        } while (choice != 6);
+
+        sc.close();
+    }
+
+    static void bookRoom(Scanner sc) {
+        System.out.print("Enter your name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter room number (1-" + MAX_ROOMS + "): ");
+        int roomNumber = sc.nextInt();
+
+        sc.nextLine(); // consume newline
+        System.out.print("Enter time slot (e.g., 5-6 PM): ");
+        String timeSlot = sc.nextLine();
+
+        if (isRoomAvailable(roomNumber, timeSlot)) {
+            reservations[count++] = new Reservation(roomNumber, name, timeSlot);
+            System.out.println("Room booked successfully!");
+        } else {
+            System.out.println("Room not available at that time!");
+        }
+    }
+
+    static void cancelReservation(Scanner sc) {
+        System.out.print("Enter your name to cancel reservation: ");
+        String name = sc.nextLine();
+
+        for (int i = 0; i < count; i++) {
+            if (reservations[i].name.equalsIgnoreCase(name)) {
+                for (int j = i; j < count - 1; j++) {
+                    reservations[j] = reservations[j + 1];
+                }
+                reservations[--count] = null;
+                System.out.println("Reservation cancelled.");
+                return;
+            }
+        }
+
+        System.out.println("Reservation not found.");
+    }
+
+    static void viewReservations() {
+        if (count == 0) {
+            System.out.println("No reservations yet.");
+        } else {
+            System.out.println("\nList of Reservations:");
+            for (int i = 0; i < count; i++) {
+                System.out.println((i + 1) + ". Room " + reservations[i].roomNumber + " | Name: " + reservations[i].name + " | Time: " + reservations[i].timeSlot);
+            }
+        }
+    }
+
+    static void modifyReservation(Scanner sc) {
+        System.out.print("Enter your name to modify reservation: ");
+        String name = sc.nextLine();
+
+        for (int i = 0; i < count; i++) {
+            if (reservations[i].name.equalsIgnoreCase(name)) {
+                System.out.print("Enter new room number (1-" + MAX_ROOMS + "): ");
+                int newRoom = sc.nextInt();
+                sc.nextLine(); // consume newline
+                System.out.print("Enter new time slot: ");
+                String newTime = sc.nextLine();
+
+                if (isRoomAvailable(newRoom, newTime)) {
+                    reservations[i].roomNumber = newRoom;
+                    reservations[i].timeSlot = newTime;
+                    System.out.println("Reservation updated.");
+                } else {
+                    System.out.println("Room not available at that time.");
+                }
+                return;
+            }
+        }
+
+        System.out.println("Reservation not found.");
+    }
+
+    static void checkAvailability(Scanner sc) {
+        System.out.print("Enter room number to check availability: ");
+        int room = sc.nextInt();
+        sc.nextLine();
+        System.out.print("Enter time slot: ");
+        String time = sc.nextLine();
+
+        if (isRoomAvailable(room, time)) {
+            System.out.println("Room is available.");
+        } else {
+            System.out.println("Room is already booked.");
+        }
+    }
+
+    static boolean isRoomAvailable(int roomNumber, String timeSlot) {
+        for (int i = 0; i < count; i++) {
+            if (reservations[i].roomNumber == roomNumber && reservations[i].timeSlot.equalsIgnoreCase(timeSlot)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
