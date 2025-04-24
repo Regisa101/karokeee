@@ -1,5 +1,17 @@
 import java.util.Scanner;
 
+class Room {
+    int roomNumber;
+    double price;
+    int capacity;
+
+    Room(int roomNumber, double price, int capacity) {
+        this.roomNumber = roomNumber;
+        this.price = price;
+        this.capacity = capacity;
+    }
+}
+
 class Reservation {
     int roomNumber;
     String name;
@@ -15,6 +27,13 @@ class Reservation {
 public class KaraokeReservationSystem {
     static final int MAX_ROOMS = 5;
     static Reservation[] reservations = new Reservation[50];
+    static Room[] rooms = {
+        new Room(1, 1000, 4),
+        new Room(2, 1200, 6),
+        new Room(3, 1500, 8),
+        new Room(4, 2000, 10),
+        new Room(5, 2500, 12)
+    };
     static int count = 0;
 
     public static void main(String[] args) {
@@ -64,18 +83,33 @@ public class KaraokeReservationSystem {
         System.out.print("Enter your name: ");
         String name = sc.nextLine();
 
-        System.out.print("Enter room number (1-" + MAX_ROOMS + "): ");
-        int roomNumber = sc.nextInt();
-
-        sc.nextLine(); // consume newline
         System.out.print("Enter time slot (e.g., 5-6 PM): ");
         String timeSlot = sc.nextLine();
+
+        // Show available rooms with price and capacity
+        System.out.println("\nAvailable Rooms at " + timeSlot + ":");
+        boolean found = false;
+        for (Room room : rooms) {
+            if (isRoomAvailable(room.roomNumber, timeSlot)) {
+                System.out.println("Room " + room.roomNumber + " | Price: Rs. " + room.price + " | Capacity: " + room.capacity + " people");
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No rooms available at this time slot.");
+            return;
+        }
+
+        System.out.print("\nEnter room number to book: ");
+        int roomNumber = sc.nextInt();
+        sc.nextLine(); // consume newline
 
         if (isRoomAvailable(roomNumber, timeSlot)) {
             reservations[count++] = new Reservation(roomNumber, name, timeSlot);
             System.out.println("Room booked successfully!");
         } else {
-            System.out.println("Room not available at that time!");
+            System.out.println("Sorry, the room is no longer available.");
         }
     }
 
@@ -114,11 +148,26 @@ public class KaraokeReservationSystem {
 
         for (int i = 0; i < count; i++) {
             if (reservations[i].name.equalsIgnoreCase(name)) {
-                System.out.print("Enter new room number (1-" + MAX_ROOMS + "): ");
-                int newRoom = sc.nextInt();
-                sc.nextLine(); // consume newline
                 System.out.print("Enter new time slot: ");
                 String newTime = sc.nextLine();
+
+                System.out.println("\nAvailable Rooms at " + newTime + ":");
+                boolean found = false;
+                for (Room room : rooms) {
+                    if (isRoomAvailable(room.roomNumber, newTime)) {
+                        System.out.println("Room " + room.roomNumber + " | Price: Rs. " + room.price + " | Capacity: " + room.capacity);
+                        found = true;
+                    }
+                }
+
+                if (!found) {
+                    System.out.println("No rooms available at this time slot.");
+                    return;
+                }
+
+                System.out.print("\nEnter new room number: ");
+                int newRoom = sc.nextInt();
+                sc.nextLine(); // consume newline
 
                 if (isRoomAvailable(newRoom, newTime)) {
                     reservations[i].roomNumber = newRoom;
