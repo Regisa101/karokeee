@@ -41,7 +41,7 @@ public class KaraokeReservationSystem {
         int choice;
 
         do {
-            System.out.println("\n🎤 Karaoke Reservation System 🎤");
+            System.out.println("\nKaraoke Reservation System");
             System.out.println("1. Book a Room");
             System.out.println("2. Cancel Reservation");
             System.out.println("3. View Reservations");
